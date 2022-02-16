@@ -29,16 +29,14 @@ public class ActorsRepository {
     }
 
     public List<String> findActorsWithPrefix(String prefix) {
-        List<String> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement stmt = connection.prepareStatement("SELECT actor_name FROM actors WHERE actor_name LIKE ?")) {
             stmt.setString(1, prefix + "%");
-            result = getActorsResultSet(stmt);
+            return getActorsResultSet(stmt);
 
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot query!", sqle);
         }
-        return result;
     }
 
     private List<String> getActorsResultSet(PreparedStatement stmt) {
@@ -55,6 +53,4 @@ public class ActorsRepository {
     }
 }
 
-//Ezek a gyakorlati feladatok, amiket próbáljunk megcsinálni?
-//https://github.com/Training360/java-jpa-public/blob/master/jdbc-lab.md
 
