@@ -14,12 +14,19 @@ public class MovieRepository {
         this.dataSource = dataSource;
     }
 
-    public void saveMovie(String title, LocalDate release) {
+    public long saveMovie(String title, LocalDate release) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement stmt = connection.prepareStatement("insert into movies (title, release_date) values (?,?)")) {
+             PreparedStatement stmt = connection.prepareStatement("insert into movies (title, release_date) values (?,?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, title);
             stmt.setDate(2, Date.valueOf(release));
-            stmt.executeQuery();
+            stmt.executeUpdate();
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+                throw new IllegalStateException("Cannot get key");
+            }
 
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot reach database", sqle);

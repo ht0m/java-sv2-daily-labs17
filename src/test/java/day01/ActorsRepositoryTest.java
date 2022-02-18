@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,7 +37,9 @@ class ActorsRepositoryTest {
 
     @Test
     void InsertTest() {
-        actorsRepository.saveActor("Jane Doe");
+        long id = actorsRepository.saveActor("Jane Doe");
+        Optional<Actor> result = actorsRepository.findActorByName("Jan");
+
         flyway.clean();
     }
 
