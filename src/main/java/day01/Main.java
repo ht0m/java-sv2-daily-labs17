@@ -30,11 +30,15 @@ public class Main {
         MovieRepository movieRepository = new MovieRepository(dataSource);
         ActorsRepository actorsRepository1 = new ActorsRepository(dataSource);
         ActorsMoviesRepository actorsMoviesRepository = new ActorsMoviesRepository(dataSource);
+        RatingsRepository ratingsRepository = new RatingsRepository(dataSource);
         ActorMoviesService actorMoviesService = new ActorMoviesService(actorsRepository, movieRepository, actorsMoviesRepository);
+        MoviesRatingService moviesRatingService = new MoviesRatingService(movieRepository, ratingsRepository);
 
         actorMoviesService.insertMovieWithActors("Titanic", LocalDate.of(1998, 11, 16), Arrays.asList("Leonardo DiCaprio", "Kate Winslet"));
         actorMoviesService.insertMovieWithActors("Matrix", LocalDate.of(1999, 6, 8), Arrays.asList("Leonardo DiCaprio", "Marilin Monroe", "Kate Winslet"));
 
+        moviesRatingService.addRatings("Titanic", 5,4,2,2);
+        moviesRatingService.addRatings("Matrix",1,2,3,4,5);
 
 //        movieRepository.saveMovie("Titanic", LocalDate.of(1998, 01, 22));
 //        movieRepository.saveMovie("Madmax-2", LocalDate.of(1985, 05, 12));
