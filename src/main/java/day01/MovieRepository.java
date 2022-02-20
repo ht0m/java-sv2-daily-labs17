@@ -17,10 +17,11 @@ public class MovieRepository {
 
     public long saveMovie(String title, LocalDate release) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement stmt = connection.prepareStatement("insert into movies (title, release_date) values (?,?)",
+             PreparedStatement stmt = connection.prepareStatement("insert into movies (title, release_date,average) values (?,?,?)",
                      Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, title);
             stmt.setDate(2, Date.valueOf(release));
+            stmt.setDouble(3,0.0);
             stmt.executeUpdate();
             return getKeyFromMovieByStatement(stmt);
 
