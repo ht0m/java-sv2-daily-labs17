@@ -36,9 +36,11 @@ public class Main {
 
         actorMoviesService.insertMovieWithActors("Titanic", LocalDate.of(1998, 11, 16), Arrays.asList("Leonardo DiCaprio", "Kate Winslet"));
         actorMoviesService.insertMovieWithActors("Matrix", LocalDate.of(1999, 6, 8), Arrays.asList("Leonardo DiCaprio", "Marilin Monroe", "Kate Winslet"));
+        actorMoviesService.insertMovieWithActors("Snatch", LocalDate.of(2000, 3, 21), Arrays.asList("Bradd Pitt", "Jason Statham", "Stephen Graham"));
 
         moviesRatingService.addRatings("Titanic", 5,4,2,2);
         moviesRatingService.addRatings("Matrix",1,2,3,4,5);
+        moviesRatingService.addRatings("Snatch",4,5,4,4,5,4);
 
 //        movieRepository.saveMovie("Titanic", LocalDate.of(1998, 01, 22));
 //        movieRepository.saveMovie("Madmax-2", LocalDate.of(1985, 05, 12));

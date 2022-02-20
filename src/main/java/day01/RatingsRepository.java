@@ -30,7 +30,7 @@ public class RatingsRepository {
     }
 
     private void calculateAverage(Connection connection, long movieId) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement("select AVG(rating) from ratings where movie_id = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement("select Round(AVG(rating),2) from ratings where movie_id = ?")) {
             stmt.setLong(1, movieId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
