@@ -20,17 +20,13 @@ public class ActorsRepository {
                      Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, name);
             stmt.executeUpdate();
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-            }
-            throw new IllegalStateException("Cannot get key");
+            return getKeyFromActorByStatement(stmt);
 
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot update " + name, sqle);
         }
     }
+
 
     public List<String> findActorsWithPrefix(String prefix) {
         try (Connection connection = dataSource.getConnection();
@@ -53,6 +49,17 @@ public class ActorsRepository {
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot query!", sqle);
         }
+    }
+
+    private long getKeyFromActorByStatement(PreparedStatement stmt) {
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query!");
+        }
+        throw new IllegalStateException("Cannot get key");
     }
 
     private List<String> getActorsResultSet(PreparedStatement stmt) {

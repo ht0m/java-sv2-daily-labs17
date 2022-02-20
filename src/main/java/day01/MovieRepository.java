@@ -22,12 +22,7 @@ public class MovieRepository {
             stmt.setString(1, title);
             stmt.setDate(2, Date.valueOf(release));
             stmt.executeUpdate();
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-                throw new IllegalStateException("Cannot get key");
-            }
+            return getKeyFromMovieByStatement(stmt);
 
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot reach database", sqle);
@@ -68,6 +63,17 @@ public class MovieRepository {
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot query!", sqle);
         }
+    }
+
+    private long getKeyFromMovieByStatement(PreparedStatement stmt) {
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        } catch (SQLException sqle) {
+            throw new IllegalStateException("Cannot query!");
+        }
+        throw new IllegalStateException("Cannot get key");
     }
 
     private Optional<Movie> processSelectStatement(PreparedStatement stmt) throws SQLException{
