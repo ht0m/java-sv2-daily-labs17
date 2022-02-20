@@ -34,7 +34,6 @@ public class RatingsRepository {
             stmt.setLong(1, movieId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-//                    double avg = Double.valueOf(rs.getString(1));
                     double avg = rs.getFloat(1);
                     insertAvgIntoMovie(connection, movieId, avg);
                 }
