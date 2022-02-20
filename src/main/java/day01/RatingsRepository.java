@@ -20,16 +20,15 @@ public class RatingsRepository {
     public void insertRating(long movieId, List<Integer> rating) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            String sql = "insert into ratings (movie_id, rating)  values(?,?)";
-            insertRatingWithConn(connection, sql, movieId, rating);
-            
+            insertRatingWithConn(connection, movieId, rating);
+
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot connect to ratings", sqle);
         }
     }
 
-    private void insertRatingWithConn(Connection connection, String sql, long movieId, List<Integer> rating) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+    private void insertRatingWithConn(Connection connection, long movieId, List<Integer> rating) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement("insert into ratings (movie_id, rating)  values(?,?)")) {
             for (Integer actual : rating) {
                 if (actual < MIN_RATINGS || actual > MAX_RATINGS) {
                     throw new IllegalArgumentException("Invalid rating!");
