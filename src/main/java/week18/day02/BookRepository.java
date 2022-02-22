@@ -20,8 +20,14 @@ public class BookRepository {
 
     public List<Book> findBooksByPrefix(String prefix) {
         return jdbcTemplate.query("select * from books where writer like ?",
-                (rs, rowNumber) -> new Book (rs.getString("writer"), rs.getString("title"), rs.getInt("price"), rs.getInt("pieces")),
+                (rs, rowNumber) -> new Book (rs.getLong("id"), rs.getString("writer"), rs.getString("title"), rs.getInt("price"), rs.getInt("pieces")),
                 prefix + "%");
+    }
+
+    public Book findBookById(long id) {
+        return jdbcTemplate.queryForObject("select * from books where id=?",
+                (rs, rowNumber) -> new Book(rs.getLong("id"), rs.getString("writer"), rs.getString("title"), rs.getInt("price"), rs.getInt("pieces")),
+                id);
     }
 
     public void addBooks(long id, int pieces) {

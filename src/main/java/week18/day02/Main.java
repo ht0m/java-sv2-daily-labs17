@@ -29,6 +29,7 @@ public class Main {
         bookRepository.addBooks(2,5);
 
         System.out.println(bookRepository.findBooksByPrefix("Feke"));
+        System.out.println(bookRepository.findBookById(1));
 
 
     }
