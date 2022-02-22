@@ -1,1 +1,0 @@
-alter TABLE movies ADD average float;
