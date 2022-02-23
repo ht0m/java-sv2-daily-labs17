@@ -1,38 +1,54 @@
 package day01;
 
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Optional;
 
-public class Main {
+import static org.junit.jupiter.api.Assertions.*;
 
-    public static void main(String[] args) {
+class RatingsRepositoryTest {
+
+
+    ActorsRepository actorsRepository;
+    RatingsRepository ratingsRepository;
+    MovieRepository movieRepository;
+    ActorsMoviesRepository actorsMoviesRepository;
+    ActorMoviesService actorMoviesService;
+    MoviesRatingService moviesRatingService;
+
+    Flyway flyway;
+
+    @BeforeEach
+    void init() {
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
-            dataSource.setUrl("jdbc:mariadb://localhost:3306/movies-actors?useUnicode=true");
+            dataSource.setUrl("jdbc:mariadb://localhost:3306/movies-actors-test?useUnicode=true");
             dataSource.setUser("root");
             dataSource.setPassword("klaradb");
         } catch (SQLException sqle) {
             throw new IllegalStateException("Can not reach data source", sqle);
         }
 
-        Flyway flyway = Flyway.configure().locations("db/migration/movies").dataSource(dataSource).load();
+        flyway = Flyway.configure().dataSource(dataSource).load();
         flyway.clean();
         flyway.migrate();
 
-        ActorsRepository actorsRepository = new ActorsRepository(dataSource);
-//        actorsRepository.saveActor("Jake Doe");
-//        System.out.println(actorsRepository.findActorsWithPrefix("Ja"));
+        actorsRepository = new ActorsRepository(dataSource);
+        ratingsRepository = new RatingsRepository(dataSource);
+        movieRepository = new MovieRepository(dataSource);
+        actorsMoviesRepository = new ActorsMoviesRepository(dataSource);
+        moviesRatingService = new MoviesRatingService(movieRepository,ratingsRepository);
+        actorMoviesService = new ActorMoviesService(actorsRepository,movieRepository,actorsMoviesRepository);
+    }
 
-        MovieRepository movieRepository = new MovieRepository(dataSource);
-        ActorsRepository actorsRepository1 = new ActorsRepository(dataSource);
-        ActorsMoviesRepository actorsMoviesRepository = new ActorsMoviesRepository(dataSource);
-        RatingsRepository ratingsRepository = new RatingsRepository(dataSource);
-        ActorMoviesService actorMoviesService = new ActorMoviesService(actorsRepository, movieRepository, actorsMoviesRepository);
-        MoviesRatingService moviesRatingService = new MoviesRatingService(movieRepository, ratingsRepository);
+    @Test
+    void InsertTest() {
 
         actorMoviesService.insertMovieWithActors("Titanic", LocalDate.of(1998, 11, 16), Arrays.asList("Leonardo DiCaprio", "Kate Winslet"));
         actorMoviesService.insertMovieWithActors("Matrix", LocalDate.of(1999, 6, 8), Arrays.asList("Leonardo DiCaprio", "Marilin Monroe", "Kate Winslet"));
@@ -46,10 +62,6 @@ public class Main {
         moviesRatingService.addRatings("Student of the Year 2",5);
 
 
-//        movieRepository.saveMovie("Titanic", LocalDate.of(1998, 01, 22));
-//        movieRepository.saveMovie("Madmax-2", LocalDate.of(1985, 05, 12));
-//        System.out.println(movieRepository.findAllMovies());
-
-
     }
+
 }

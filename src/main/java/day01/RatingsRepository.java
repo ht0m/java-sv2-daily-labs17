@@ -22,19 +22,19 @@ public class RatingsRepository {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             insertRatingWithConn(connection, movieId, rating);
-            connection.setAutoCommit(true);
-            calculateAverage(connection, movieId);
+//            connection.setAutoCommit(true);
+//            calculateAverage(connection, movieId);
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot connect to ratings", sqle);
         }
     }
 
     private void calculateAverage(Connection connection, long movieId) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement("select Round(AVG(rating),2) from ratings where movie_id = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement("select Round(AVG(rating),2) as rounded_avg from ratings where movie_id = ?")) {
             stmt.setLong(1, movieId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    double avg = rs.getFloat(1);
+                    double avg = rs.getFloat("rounded_avg");
                     insertAvgIntoMovie(connection, movieId, avg);
                 }
             } catch (SQLException sqle) {

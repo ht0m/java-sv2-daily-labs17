@@ -1,1 +1,1 @@
-alter TABLE movies ADD average float default null;
+alter TABLE movies ADD average double null;
